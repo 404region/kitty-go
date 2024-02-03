@@ -19,58 +19,131 @@ a + b, a - b, a * b, a / b. Данные передаются в одну стр
 2) Калькулятор умеет работать как с арабскими (1, 2, 3, 4, 5…),
 так и с римскими (I, II, III, IV, V…) числами.
 */
-var cartaRomanToArabic = map[string]int{
-	"I":  1,
-	"IV": 4,
-	"V":  5,
-	"IX": 9,
-	"X":  10,
-	"XL": 40,
-	"L":  50,
-	"XC": 90,
-	"C":  100,
-}
-var cartaArabicToRoman = map[int]string{
-	1:   "I",
-	4:   "IV",
-	5:   "V",
-	9:   "IX",
-	10:  "X",
-	40:  "XL",
-	50:  "L",
-	90:  "XC",
-	100: "C",
+
+var romanArr = []string{
+	"I",
+	"II",
+	"III",
+	"IV",
+	"V",
+	"VI",
+	"VII",
+	"VIII",
+	"IX",
+	"X",
+	"XI",
+	"XII",
+	"XIII",
+	"XIV",
+	"XV",
+	"XVI",
+	"XVII",
+	"XVIII",
+	"XIX",
+	"XX",
+	"XXI",
+	"XXII",
+	"XXIII",
+	"XXIV",
+	"XXV",
+	"XXVI",
+	"XXVII",
+	"XXVIII",
+	"XXIX",
+	"XXX",
+	"XXXI",
+	"XXXII",
+	"XXXIII",
+	"XXXIV",
+	"XXXV",
+	"XXXVI",
+	"XXXVII",
+	"XXXVIII",
+	"XXXIX",
+	"XL",
+	"XLI",
+	"XLII",
+	"XLIII",
+	"XLIV",
+	"XLV",
+	"XLVI",
+	"XLVII",
+	"XLVIII",
+	"XLIX",
+	"L",
+	"LI",
+	"ЛИИ",
+	"LIII",
+	"LIV",
+	"LV",
+	"LVI",
+	"LVII",
+	"LVIII",
+	"LIX",
+	"LX",
+	"LXI",
+	"LXII",
+	"LXIII",
+	"LXIV",
+	"LXV",
+	"LXVI",
+	"LXVII",
+	"LXVIII",
+	"LXIX",
+	"LXX",
+	"LXXI",
+	"LXXII",
+	"LXXXIII",
+	"LXXIV",
+	"LXXV",
+	"LXXVI",
+	"LXXVII",
+	"LXXVIII",
+	"LXXXIX",
+	"LXXX",
+	"LXXXI",
+	"LXXXII",
+	"LXXXIII",
+	"LXXXIV",
+	"LXXXV",
+	"LXXXVI",
+	"LXXXVII",
+	"LXXVIII",
+	"LXXXIX",
+	"XC",
+	"XCI",
+	"XII",
+	"XIII",
+	"XCIV",
+	"XCV",
+	"XCVI",
+	"XVII",
+	"XCVIII",
+	"ХХIХ",
+	"C",
 }
 
-type arabicToRomanStruct struct {
-	arabic int
-	roman  string
-}
-
-var arabicToRomanArr = []arabicToRomanStruct{
-	{arabic: 100, roman: "C"},
-	{arabic: 90, roman: "XC"},
-	{arabic: 50, roman: "L"},
-	{arabic: 40, roman: "XL"},
-	{arabic: 10, roman: "X"},
-	{arabic: 9, roman: "IX"},
-	{arabic: 5, roman: "V"},
-	{arabic: 4, roman: "IV"},
-	{arabic: 1, roman: "I"},
+func find(a []string, x string) int {
+	for i, n := range a {
+		if x == n {
+			return i
+		}
+	}
+	return -1
 }
 
 func translateRomanToArabic(romanNum string) (arabicNum int) {
-	for _, el := range arabicToRomanArr {
-		fmt.Println(el.roman, el.arabic)
+	findEl := find(romanArr, romanNum)
+	if findEl != -1 {
+		fmt.Println("findEl + 1 ", findEl+1)
+		return findEl + 1
 	}
-	/*if n == 0 {
-		return 1
-	}
-	return n * factorial(n-1)
-	*/
-	return 0
+	return findEl
 }
 
+func translateArabicToRoman(arabicNum int) (romanNum string) {
+	return romanArr[arabicNum-1]
+}
 func calc(a int, b int, sign string) (result int) {
 	switch {
 	case sign == "+":
@@ -98,11 +171,11 @@ func main() {
 	fmt.Println("Текст: " + text)
 
 	// Регулярки
-	re, _ := regexp.Compile(`(\d+)(-|\+|//|\*)(\d+)`) // 1+2
+	re, _ := regexp.Compile(`(\d+)([-+/*])(\d+)`) // 1+2
 	res := re.FindAllStringSubmatch(text, -1)
-	//fmt.Println("res ", res) // [[2+2 2 + 2]]
+	fmt.Println("res ", res) // [[2+2 2 + 2]]
 
-	reRoman, _ := regexp.Compile(`(I|V|X+)(-|\+|//|\*)(I|V|X+)`) // 1+2
+	reRoman, _ := regexp.Compile(`([IVX]+)([-+/*])([IVX]+)`) // 1+2
 	resRoman := reRoman.FindAllStringSubmatch(text, -1)
 	// fmt.Println("resRoman ", resRoman) // [[I+I I + I]]
 
@@ -119,14 +192,15 @@ func main() {
 		num2, _ := strconv.Atoi(res[0][3])
 
 		// результат
+		fmt.Println("Результат: ")
 		fmt.Println(calc(num1, num2, res[0][2]))
 	} else if len(resRoman) > 0 && len(resRoman[0]) >= 4 {
 		fmt.Println("resRoman ", resRoman) // [[I+I I + I]]
 		// конвертируем в римские
 		fmt.Println("res[0] ", resRoman[0][1], resRoman[0][2], resRoman[0][3])
 		num1 := translateRomanToArabic(resRoman[0][1])
-		// num2, _ := strconv.Atoi(res[0][3])
-		fmt.Println(num1)
+		num2 := translateRomanToArabic(resRoman[0][3])
+		fmt.Println("translateArabicToRoman result : ", translateArabicToRoman(calc(num1, num2, resRoman[0][2])))
 	} else {
 		// Ошибка - вывести пользователю ошибку
 	}
